@@ -1,0 +1,841 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LPへのご意見をお聞かせください — スマスタ調査</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&family=Noto+Serif+JP:wght@300;400;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  /* ─── Design Tokens ─────────────────────────────────── */
+  :root {
+    --ink:        #141410;
+    --paper:      #f7f3ec;
+    --white:      #ffffff;
+    --accent:     #bf3b22;
+    --accent-dim: #e8cfc9;
+    --muted:      #6b6760;
+    --line:       #ddd8cf;
+    --line-soft:  #ece8e1;
+    --selected-bg:#141410;
+    --selected-fg:#ffffff;
+    --hover-bg:   #f0ece4;
+
+    --f-sans:  'Noto Sans JP', sans-serif;
+    --f-serif: 'Noto Serif JP', serif;
+    --f-mono:  'DM Mono', monospace;
+  }
+
+  /* ─── Reset ─────────────────────────────────────────── */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: var(--f-sans);
+    background: var(--paper);
+    color: var(--ink);
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ─── Grain texture ──────────────────────────────────── */
+  body::after {
+    content: '';
+    position: fixed; inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+    pointer-events: none; z-index: 9999;
+  }
+
+  /* ─── Progress ───────────────────────────────────────── */
+  #progress-track {
+    position: fixed; top: 0; left: 0; right: 0;
+    height: 2px; background: var(--line-soft); z-index: 200;
+  }
+  #progress-fill {
+    height: 100%; width: 0%; background: var(--accent);
+    transition: width 0.35s ease;
+  }
+
+  /* ─── Header ─────────────────────────────────────────── */
+  header {
+    padding: 1.4rem 2rem;
+    border-bottom: 1px solid var(--line);
+    display: flex; align-items: center; gap: 1.2rem;
+    background: var(--paper);
+    position: sticky; top: 0; z-index: 100;
+  }
+  .logo-mark {
+    width: 32px; height: 32px;
+    background: var(--ink);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    font-family: var(--f-mono); font-size: 0.52rem;
+    color: white; letter-spacing: 0.05em; line-height: 1.3;
+    text-align: center;
+  }
+  .header-text { display: flex; flex-direction: column; gap: 0.1rem; }
+  .header-brand {
+    font-family: var(--f-mono); font-size: 0.62rem;
+    letter-spacing: 0.12em; color: var(--muted); text-transform: uppercase;
+  }
+  .header-title {
+    font-family: var(--f-sans); font-size: 0.82rem;
+    font-weight: 500; color: var(--ink);
+  }
+  .header-badge {
+    margin-left: auto;
+    font-family: var(--f-mono); font-size: 0.6rem;
+    color: var(--muted); letter-spacing: 0.05em;
+    display: flex; align-items: center; gap: 0.5rem;
+  }
+  .badge-dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--accent); opacity: 0.7;
+  }
+
+  /* ─── Layout ─────────────────────────────────────────── */
+  main { max-width: 680px; margin: 0 auto; padding: 3.5rem 1.5rem 8rem; }
+
+  /* ─── Hero intro ─────────────────────────────────────── */
+  .hero {
+    margin-bottom: 4rem;
+    animation: fadeUp .6s ease both;
+  }
+  .hero-eyebrow {
+    font-family: var(--f-mono); font-size: 0.62rem;
+    letter-spacing: 0.2em; color: var(--accent);
+    text-transform: uppercase; margin-bottom: 1.4rem;
+    display: flex; align-items: center; gap: 0.8rem;
+  }
+  .hero-eyebrow::after {
+    content: ''; flex: 1; max-width: 40px; height: 1px;
+    background: var(--accent); opacity: 0.4;
+  }
+  .hero h1 {
+    font-family: var(--f-serif);
+    font-size: clamp(1.45rem, 4vw, 1.9rem);
+    font-weight: 300; line-height: 1.65;
+    letter-spacing: 0.03em; margin-bottom: 1.4rem;
+  }
+  .hero h1 em { font-style: normal; color: var(--accent); }
+  .hero-desc {
+    font-size: 0.88rem; line-height: 1.9;
+    color: var(--muted); max-width: 540px;
+  }
+  .hero-meta {
+    margin-top: 1.8rem;
+    display: flex; flex-wrap: wrap; gap: 1.4rem;
+  }
+  .meta-pill {
+    display: flex; align-items: center; gap: 0.5rem;
+    font-family: var(--f-mono); font-size: 0.65rem;
+    color: var(--muted); letter-spacing: 0.04em;
+  }
+  .meta-pill::before {
+    content: ''; width: 5px; height: 5px;
+    border-radius: 50%; background: var(--accent); opacity: 0.5;
+  }
+
+  /* LP Preview */
+  .lp-card {
+    border: 1px solid var(--line); background: var(--white);
+    display: flex; align-items: center; gap: 1.2rem;
+    padding: 1.2rem 1.5rem; margin-bottom: 4rem;
+    animation: fadeUp .6s ease .05s both;
+  }
+  .lp-icon {
+    width: 44px; height: 44px; background: var(--ink);
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--f-mono); font-size: 0.5rem;
+    color: white; line-height: 1.4; text-align: center; flex-shrink: 0;
+  }
+  .lp-info h3 {
+    font-size: 0.88rem; font-weight: 500; margin-bottom: 0.2rem;
+  }
+  .lp-info p { font-family: var(--f-mono); font-size: 0.65rem; color: var(--muted); }
+  .lp-link {
+    margin-left: auto; flex-shrink: 0;
+    font-family: var(--f-mono); font-size: 0.62rem;
+    color: var(--accent); text-decoration: none;
+    border: 1px solid var(--accent-dim);
+    padding: 0.45rem 1rem; letter-spacing: 0.08em;
+    transition: all .18s;
+  }
+  .lp-link:hover { background: var(--accent); color: white; border-color: var(--accent); }
+
+  /* ─── Section ────────────────────────────────────────── */
+  .section {
+    margin-bottom: 3.5rem;
+    animation: fadeUp .55s ease both;
+  }
+  .section:nth-child(2) { animation-delay: .08s; }
+  .section:nth-child(3) { animation-delay: .14s; }
+  .section:nth-child(4) { animation-delay: .2s; }
+
+  .section-head {
+    display: flex; align-items: baseline; gap: 0.9rem;
+    padding-bottom: 1rem; margin-bottom: 2rem;
+    border-bottom: 1px solid var(--line);
+  }
+  .sec-num {
+    font-family: var(--f-mono); font-size: 0.6rem;
+    color: var(--accent); letter-spacing: 0.1em; flex-shrink: 0;
+  }
+  .sec-title { font-family: var(--f-serif); font-size: 1.0rem; font-weight: 400; line-height: 1.5; }
+  .sec-sub {
+    margin-left: auto; font-family: var(--f-mono);
+    font-size: 0.58rem; color: var(--muted); letter-spacing: 0.08em;
+    white-space: nowrap;
+  }
+
+  /* ─── Question ───────────────────────────────────────── */
+  .q { margin-bottom: 2.8rem; }
+  .q-label {
+    font-size: 0.9rem; font-weight: 500; line-height: 1.7;
+    margin-bottom: 1.2rem; letter-spacing: 0.01em;
+  }
+  .required {
+    display: inline-block; font-family: var(--f-mono); font-size: 0.52rem;
+    background: var(--accent); color: white;
+    padding: 0.12em 0.45em; letter-spacing: 0.1em; margin-left: 0.5rem;
+    vertical-align: middle; position: relative; top: -1px;
+  }
+
+  /* ── 5-point scale ─── */
+  .scale-wrap { border: 1px solid var(--line); display: flex; }
+  .sc-opt { flex: 1; position: relative; }
+  .sc-opt input { position: absolute; opacity: 0; width: 0; height: 0; }
+  .sc-opt label {
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    padding: 1.1rem 0.4rem; cursor: pointer;
+    border-right: 1px solid var(--line);
+    background: var(--white);
+    transition: background .13s;
+    min-height: 80px;
+  }
+  .sc-opt:last-child label { border-right: none; }
+  .sc-num {
+    font-family: var(--f-mono); font-size: 1.15rem; font-weight: 500;
+    color: var(--muted); line-height: 1; margin-bottom: 0.35rem;
+    transition: color .13s;
+  }
+  .sc-word {
+    font-size: 0.56rem; color: var(--line);
+    text-align: center; line-height: 1.4; letter-spacing: 0.02em;
+  }
+  .sc-opt input:checked + label { background: var(--selected-bg); }
+  .sc-opt input:checked + label .sc-num { color: var(--selected-fg); }
+  .sc-opt input:checked + label .sc-word { color: rgba(255,255,255,0.45); }
+  .sc-opt label:hover { background: var(--hover-bg); }
+  .sc-opt input:checked + label:hover { background: var(--selected-bg); }
+  .scale-axis {
+    display: flex; justify-content: space-between; margin-top: 0.4rem;
+    font-family: var(--f-mono); font-size: 0.58rem; color: var(--muted);
+  }
+
+  /* ── Radio list ─── */
+  .radio-list { border: 1px solid var(--line); }
+  .r-opt { position: relative; }
+  .r-opt input { position: absolute; opacity: 0; width: 0; height: 0; }
+  .r-opt label {
+    display: flex; align-items: center; gap: 1rem;
+    padding: 0.9rem 1.25rem; cursor: pointer;
+    border-bottom: 1px solid var(--line); background: var(--white);
+    font-size: 0.88rem; transition: background .13s;
+  }
+  .r-opt:last-child label { border-bottom: none; }
+  .r-opt label::before {
+    content: ''; width: 13px; height: 13px;
+    border: 1px solid var(--line); border-radius: 50%;
+    flex-shrink: 0; transition: all .13s;
+  }
+  .r-opt input:checked + label { background: var(--selected-bg); color: var(--selected-fg); }
+  .r-opt input:checked + label::before {
+    background: var(--accent); border-color: var(--accent);
+    box-shadow: inset 0 0 0 3px var(--selected-bg);
+  }
+  .r-opt label:hover { background: var(--hover-bg); }
+  .r-opt input:checked + label:hover { background: var(--selected-bg); }
+
+  /* ── Checkbox list ─── */
+  .check-list { border: 1px solid var(--line); }
+  .c-opt { position: relative; }
+  .c-opt input { position: absolute; opacity: 0; width: 0; height: 0; }
+  .c-opt label {
+    display: flex; align-items: center; gap: 1rem;
+    padding: 0.9rem 1.25rem; cursor: pointer;
+    border-bottom: 1px solid var(--line); background: var(--white);
+    font-size: 0.88rem; transition: background .13s;
+  }
+  .c-opt:last-child label { border-bottom: none; }
+  .c-opt label::before {
+    content: ''; width: 13px; height: 13px;
+    border: 1px solid var(--line); flex-shrink: 0; transition: all .13s;
+  }
+  .c-opt input:checked + label { background: var(--selected-bg); color: var(--selected-fg); }
+  .c-opt input:checked + label::before { background: var(--accent); border-color: var(--accent); }
+  .c-opt label:hover { background: var(--hover-bg); }
+  .c-opt input:checked + label:hover { background: var(--selected-bg); }
+
+  /* ── Textarea ─── */
+  textarea {
+    width: 100%; padding: 0.95rem 1.2rem;
+    border: 1px solid var(--line); background: var(--white);
+    font-family: var(--f-sans); font-size: 0.88rem;
+    line-height: 1.75; color: var(--ink);
+    resize: vertical; min-height: 90px;
+    outline: none; transition: border-color .15s;
+  }
+  textarea:focus { border-color: var(--ink); }
+  textarea::placeholder { color: var(--line); }
+
+  /* ── Attribute box ─── */
+  .attr-box {
+    background: var(--white); border: 1px solid var(--line);
+    padding: 1.8rem; margin-bottom: 3rem;
+    animation: fadeUp .55s ease .25s both;
+  }
+  .attr-label {
+    font-family: var(--f-mono); font-size: 0.6rem;
+    letter-spacing: 0.14em; color: var(--muted); text-transform: uppercase;
+    padding-bottom: 0.9rem; margin-bottom: 1.6rem;
+    border-bottom: 1px solid var(--line-soft);
+  }
+  .attr-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 0;
+    border: 1px solid var(--line);
+  }
+  .attr-grid .r-opt:nth-child(odd) label { border-right: 1px solid var(--line); }
+  @media(max-width:480px){ .attr-grid { grid-template-columns: 1fr; } .attr-grid .r-opt:nth-child(odd) label { border-right: none; } }
+
+  /* ─── Error state ─────────────────────────────────────── */
+  .err-msg {
+    font-family: var(--f-mono); font-size: 0.65rem;
+    color: var(--accent); margin-top: 0.5rem; display: none;
+    letter-spacing: 0.04em;
+  }
+  .has-error .err-msg { display: block; }
+  .has-error .scale-wrap,
+  .has-error .radio-list,
+  .has-error .check-list,
+  .has-error textarea { border-color: var(--accent); }
+
+  /* ─── Submit ─────────────────────────────────────────── */
+  .submit-row {
+    margin-top: 2.5rem; padding-top: 2rem; border-top: 1px solid var(--line);
+    display: flex; align-items: center; gap: 2rem; flex-wrap: wrap;
+    animation: fadeUp .55s ease .3s both;
+  }
+  .btn-submit {
+    padding: 0.95rem 2.8rem; background: var(--ink); color: white;
+    font-family: var(--f-mono); font-size: 0.72rem; letter-spacing: 0.15em;
+    text-transform: uppercase; border: none; cursor: pointer;
+    transition: background .18s; position: relative; overflow: hidden;
+  }
+  .btn-submit::after {
+    content: ''; position: absolute; bottom: 0; left: 0;
+    width: 0; height: 2px; background: var(--accent); transition: width .3s;
+  }
+  .btn-submit:hover { background: #2a2a25; }
+  .btn-submit:hover::after { width: 100%; }
+  .btn-submit:disabled { opacity: 0.45; cursor: not-allowed; }
+  .btn-submit:disabled::after { display: none; }
+  .submit-note {
+    font-family: var(--f-mono); font-size: 0.62rem;
+    color: var(--muted); line-height: 1.8;
+  }
+
+  /* ─── Loading ─────────────────────────────────────────── */
+  #overlay {
+    display: none; position: fixed; inset: 0;
+    background: rgba(247,243,236,.88); backdrop-filter: blur(3px);
+    z-index: 500; align-items: center; justify-content: center;
+    flex-direction: column; gap: 1rem;
+  }
+  #overlay.on { display: flex; }
+  .spinner {
+    width: 30px; height: 30px;
+    border: 2px solid var(--line); border-top-color: var(--ink);
+    border-radius: 50%; animation: spin .7s linear infinite;
+  }
+  .load-text {
+    font-family: var(--f-mono); font-size: 0.68rem;
+    color: var(--muted); letter-spacing: 0.1em;
+  }
+
+  /* ─── End screens ─────────────────────────────────────── */
+  .end-screen {
+    display: none; text-align: center;
+    padding: 7rem 2rem; animation: fadeUp .6s ease both;
+  }
+  .end-icon {
+    width: 60px; height: 60px; background: var(--ink);
+    margin: 0 auto 2rem;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .end-icon svg { width: 26px; height: 26px; stroke: white; fill: none; stroke-width: 2; }
+  .end-screen h2 {
+    font-family: var(--f-serif); font-size: 1.3rem; font-weight: 300;
+    line-height: 1.7; margin-bottom: 1rem;
+  }
+  .end-screen p { font-size: 0.85rem; color: var(--muted); line-height: 1.9; }
+
+  /* ─── Animations ─────────────────────────────────────── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(14px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* ─── Responsive ─────────────────────────────────────── */
+  @media (max-width: 600px) {
+    header { padding: 1.1rem 1.2rem; }
+    main { padding: 2.5rem 1.2rem 6rem; }
+    .sec-sub { display: none; }
+    .submit-row { flex-direction: column; align-items: flex-start; }
+    .lp-link { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<div id="progress-track"><div id="progress-fill"></div></div>
+
+<div id="overlay">
+  <div class="spinner"></div>
+  <div class="load-text">送信中...</div>
+</div>
+
+<header>
+  <div class="logo-mark">SS</div>
+  <div class="header-text">
+    <div class="header-brand">Smart Startup</div>
+    <div class="header-title">LP 好感度調査アンケート</div>
+  </div>
+  <div class="header-badge">
+    <div class="badge-dot"></div>
+    回答受付中
+  </div>
+</header>
+
+<main>
+
+  <!-- ── FORM AREA ── -->
+  <div id="form-area">
+
+    <div class="hero">
+      <div class="hero-eyebrow">Survey</div>
+      <h1>率直なご感想を、<br><em>正直に</em>教えてください。</h1>
+      <p class="hero-desc">弊社の採用ページをご覧いただき、ありがとうございます。このアンケートは、ページの内容・伝わり方の改善を目的としています。回答はすべて統計処理され、個人が特定されることはありません。</p>
+      <div class="hero-meta">
+        <span class="meta-pill">所要時間：約3〜4分</span>
+        <span class="meta-pill">回答は匿名です</span>
+        <span class="meta-pill">個人情報の収集なし</span>
+      </div>
+    </div>
+
+    <div class="lp-card">
+      <div class="lp-icon">SMART<br>START<br>UP</div>
+      <div class="lp-info">
+        <h3>スマスタ 採用LP（調査対象ページ）</h3>
+        <p>smartstartup2-agent-network.com</p>
+      </div>
+      <a href="https://smartstartup2-agent-network.com/" target="_blank" rel="noopener" class="lp-link">LPを開く →</a>
+    </div>
+
+    <form id="survey" novalidate>
+
+      <!-- ══ SECTION 1: 第一印象 ══ -->
+      <div class="section">
+        <div class="section-head">
+          <span class="sec-num">01</span>
+          <span class="sec-title">LPの第一印象・全体の好感度</span>
+          <span class="sec-sub">First Impression</span>
+        </div>
+
+        <!-- Q1: 全体印象 -->
+        <div class="q" id="q1">
+          <div class="q-label">
+            LPを最初に見たとき、全体的な第一印象はどうでしたか？<span class="required">必須</span>
+          </div>
+          <div class="scale-wrap">
+            <div class="sc-opt"><input type="radio" name="q1" value="1" id="q1_1"><label for="q1_1"><span class="sc-num">1</span><span class="sc-word">とても<br>悪い</span></label></div>
+            <div class="sc-opt"><input type="radio" name="q1" value="2" id="q1_2"><label for="q1_2"><span class="sc-num">2</span><span class="sc-word">悪い</span></label></div>
+            <div class="sc-opt"><input type="radio" name="q1" value="3" id="q1_3"><label for="q1_3"><span class="sc-num">3</span><span class="sc-word">普通</span></label></div>
+            <div class="sc-opt"><input type="radio" name="q1" value="4" id="q1_4"><label for="q1_4"><span class="sc-num">4</span><span class="sc-word">良い</span></label></div>
+            <div class="sc-opt"><input type="radio" name="q1" value="5" id="q1_5"><label for="q1_5"><span class="sc-num">5</span><span class="sc-word">とても<br>良い</span></label></div>
+          </div>
+          <div class="scale-axis"><span>← 悪い</span><span>良い →</span></div>
+          <div class="err-msg">いずれかを選択してください</div>
+        </div>
+
+        <!-- Q2: 印象ワード -->
+        <div class="q" id="q2">
+          <div class="q-label">
+            LPを見て感じた印象を、当てはまるものすべて選んでください。<span class="required">必須</span>
+          </div>
+          <div class="check-list">
+            <div class="c-opt"><input type="checkbox" name="q2" value="信頼できる" id="q2a"><label for="q2a">信頼できる・誠実な印象</label></div>
+            <div class="c-opt"><input type="checkbox" name="q2" value="わかりやすい" id="q2b"><label for="q2b">情報が整理されていて読みやすい</label></div>
+            <div class="c-opt"><input type="checkbox" name="q2" value="新しい価値観" id="q2c"><label for="q2c">新しい働き方の可能性を感じた</label></div>
+            <div class="c-opt"><input type="checkbox" name="q2" value="続きを読みたくなった" id="q2d"><label for="q2d">読み進めるうちに引き込まれた</label></div>
+            <div class="c-opt"><input type="checkbox" name="q2" value="内容が難しい" id="q2e"><label for="q2e">内容が難しい・ピンとこなかった</label></div>
+            <div class="c-opt"><input type="checkbox" name="q2" value="大げさな印象" id="q2f"><label for="q2f">説明が大げさ・誇張されている気がした</label></div>
+            <div class="c-opt"><input type="checkbox" name="q2" value="自分には関係ない" id="q2g"><label for="q2g">自分には関係なさそうと感じた</label></div>
+          </div>
+          <div class="err-msg">少なくとも1つ選択してください</div>
+        </div>
+
+      </div><!-- /section 1 -->
+
+      <!-- ══ SECTION 2: コンセプト共感 ══ -->
+      <div class="section">
+        <div class="section-head">
+          <span class="sec-num">02</span>
+          <span class="sec-title">コンセプトへの共感・刺さり度</span>
+          <span class="sec-sub">Concept Resonance</span>
+        </div>
+
+        <!-- Q3: コンセプト共感 -->
+        <div class="q" id="q3">
+          <div class="q-label">
+            「会社員の安定を保ちながら、起業家と同じ裁量で働く」というコンセプトに、どの程度共感しますか？<span class="required">必須</span>
+          </div>
+          <div class="scale-wrap">
+            <div class="sc-opt"><input type="radio" name="q3" value="1" id="q3_1"><label for="q3_1"><span class="sc-num">1</span><span class="sc-word">全く<br>共感<br>しない</span></label></div>
+            <div class="sc-opt"><input type="radio" name="q3" value="2" id="q3_2"><label for="q3_2"><span class="sc-num">2</span><span class="sc-word">共感<br>しない</span></label></div>
+            <div class="sc-opt"><input type="radio" name="q3" value="3" id="q3_3"><label for="q3_3"><span class="sc-num">3</span><span class="sc-word">どちら<br>とも<br>いえない</span></label></div>
+            <div class="sc-opt"><input type="radio" name="q3" value="4" id="q3_4"><label for="q3_4"><span class="sc-num">4</span><span class="sc-word">やや<br>共感<br>する</span></label></div>
+            <div class="sc-opt"><input type="radio" name="q3" value="5" id="q3_5"><label for="q3_5"><span class="sc-num">5</span><span class="sc-word">非常に<br>共感<br>する</span></label></div>
+          </div>
+          <div class="scale-axis"><span>← 共感しない</span><span>共感する →</span></div>
+          <div class="err-msg">いずれかを選択してください</div>
+        </div>
+
+        <!-- Q4: 比較表 -->
+        <div class="q" id="q4">
+          <div class="q-label">
+            「独立起業 vs スマスタ」の比較表を見て、スマスタの優位性は伝わりましたか？<span class="required">必須</span>
+          </div>
+          <div class="scale-wrap">
+            <div class="sc-opt"><input type="radio" name="q4" value="1" id="q4_1"><label for="q4_1"><span class="sc-num">1</span><span class="sc-word">全く<br>伝わら<br>なかった</span></label></div>
+            <div class="sc-opt"><input type="radio" name="q4" value="2" id="q4_2"><label for="q4_2"><span class="sc-num">2</span><span class="sc-word">あまり<br>伝わら<br>なかった</span></label></div>
+            <div class="sc-opt"><input type="radio" name="q4" value="3" id="q4_3"><label for="q4_3"><span class="sc-num">3</span><span class="sc-word">どちら<br>とも<br>いえない</span></label></div>
+            <div class="sc-opt"><input type="radio" name="q4" value="4" id="q4_4"><label for="q4_4"><span class="sc-num">4</span><span class="sc-word">やや<br>伝わった</span></label></div>
+            <div class="sc-opt"><input type="radio" name="q4" value="5" id="q4_5"><label for="q4_5"><span class="sc-num">5</span><span class="sc-word">よく<br>伝わった</span></label></div>
+          </div>
+          <div class="scale-axis"><span>← 伝わらない</span><span>伝わった →</span></div>
+          <div class="err-msg">いずれかを選択してください</div>
+        </div>
+
+        <!-- Q5: 共感した/しなかったポイント -->
+        <div class="q" id="q5">
+          <div class="q-label">
+            LPの中で、<strong>特に共感・納得できた</strong>のはどの部分でしたか？（当てはまるものをすべて選択）<span class="required">必須</span>
+          </div>
+          <div class="check-list">
+            <div class="c-opt"><input type="checkbox" name="q5" value="個人リスクなし" id="q5a"><label for="q5a">「個人リスクがない」という安心感</label></div>
+            <div class="c-opt"><input type="checkbox" name="q5" value="1200万予算" id="q5b"><label for="q5b">1,200万円の予算・リソースが最初から使える点</label></div>
+            <div class="c-opt"><input type="checkbox" name="q5" value="上場企業の信用" id="q5c"><label for="q5c">上場企業の信用力を使えるという点</label></div>
+            <div class="c-opt"><input type="checkbox" name="q5" value="キャリアの土台" id="q5d"><label for="q5d">将来の独立・起業への足がかりになる点</label></div>
+            <div class="c-opt"><input type="checkbox" name="q5" value="裁量の大きさ" id="q5e"><label for="q5e">戦略・採用・予算まで任される裁量の大きさ</label></div>
+            <div class="c-opt"><input type="checkbox" name="q5" value="特になし" id="q5f"><label for="q5f">特に共感できた部分はなかった</label></div>
+          </div>
+          <div class="err-msg">少なくとも1つ選択してください</div>
+        </div>
+
+        <!-- Q6: 疑問・不安 -->
+        <div class="q" id="q6">
+          <div class="q-label">
+            LPを読んで、<strong>疑問・不安が残った</strong>点はありますか？（任意・複数選択可）
+          </div>
+          <div class="check-list">
+            <div class="c-opt"><input type="checkbox" name="q6" value="待遇の詳細" id="q6a"><label for="q6a">給与・待遇の具体的な数字が不明</label></div>
+            <div class="c-opt"><input type="checkbox" name="q6" value="成功事例不足" id="q6b"><label for="q6b">実際に成功した人の事例が少ない</label></div>
+            <div class="c-opt"><input type="checkbox" name="q6" value="会社の信頼性" id="q6c"><label for="q6c">会社・事業の信頼性がよくわからない</label></div>
+            <div class="c-opt"><input type="checkbox" name="q6" value="リスクの本当のところ" id="q6d"><label for="q6d">「リスクがない」という説明が腑に落ちない</label></div>
+            <div class="c-opt"><input type="checkbox" name="q6" value="自分に合うか" id="q6e"><label for="q6e">自分のスキル・経験で応募できるかわからない</label></div>
+            <div class="c-opt"><input type="checkbox" name="q6" value="特になし" id="q6f"><label for="q6f">特に疑問・不安はなかった</label></div>
+          </div>
+        </div>
+
+      </div><!-- /section 2 -->
+
+      <!-- ══ SECTION 3: 行動意向 ══ -->
+      <div class="section">
+        <div class="section-head">
+          <span class="sec-num">03</span>
+          <span class="sec-title">行動意向・推薦度</span>
+          <span class="sec-sub">Action Intent</span>
+        </div>
+
+        <!-- Q7: 面談意向 -->
+        <div class="q" id="q7">
+          <div class="q-label">
+            このLPを見て、カジュアル面談（選考なし・30分）に申し込もうと思いましたか？<span class="required">必須</span>
+          </div>
+          <div class="scale-wrap">
+            <div class="sc-opt"><input type="radio" name="q7" value="1" id="q7_1"><label for="q7_1"><span class="sc-num">1</span><span class="sc-word">全く<br>思わ<br>ない</span></label></div>
+            <div class="sc-opt"><input type="radio" name="q7" value="2" id="q7_2"><label for="q7_2"><span class="sc-num">2</span><span class="sc-word">思わ<br>ない</span></label></div>
+            <div class="sc-opt"><input type="radio" name="q7" value="3" id="q7_3"><label for="q7_3"><span class="sc-num">3</span><span class="sc-word">どちら<br>とも<br>いえない</span></label></div>
+            <div class="sc-opt"><input type="radio" name="q7" value="4" id="q7_4"><label for="q7_4"><span class="sc-num">4</span><span class="sc-word">やや<br>申し<br>込みたい</span></label></div>
+            <div class="sc-opt"><input type="radio" name="q7" value="5" id="q7_5"><label for="q7_5"><span class="sc-num">5</span><span class="sc-word">ぜひ<br>申し<br>込みたい</span></label></div>
+          </div>
+          <div class="scale-axis"><span>← 思わない</span><span>申し込みたい →</span></div>
+          <div class="err-msg">いずれかを選択してください</div>
+        </div>
+
+        <!-- Q8: 申し込まない理由 -->
+        <div class="q" id="q8" style="display:none;">
+          <div class="q-label">
+            申し込もうと思わなかった主な理由は何ですか？（任意）
+          </div>
+          <div class="radio-list">
+            <div class="r-opt"><input type="radio" name="q8" value="転職を考えていない" id="q8a"><label for="q8a">今は転職・キャリアチェンジを考えていない</label></div>
+            <div class="r-opt"><input type="radio" name="q8" value="自分に合わない" id="q8b"><label for="q8b">自分のスキルや経験と合わないと感じた</label></div>
+            <div class="r-opt"><input type="radio" name="q8" value="ページへの不信感" id="q8c"><label for="q8c">ページの内容・会社に疑問を感じた</label></div>
+            <div class="r-opt"><input type="radio" name="q8" value="リスクへの懸念" id="q8d"><label for="q8d">リスク・条件面への不安が残った</label></div>
+            <div class="r-opt"><input type="radio" name="q8" value="その他" id="q8e"><label for="q8e">その他（自由回答欄へ）</label></div>
+          </div>
+        </div>
+
+        <!-- Q9: 紹介意向 -->
+        <div class="q" id="q9">
+          <div class="q-label">
+            このLPを、転職を考えている知人・友人に紹介したいと思いますか？<span class="required">必須</span>
+          </div>
+          <div class="scale-wrap">
+            <div class="sc-opt"><input type="radio" name="q9" value="1" id="q9_1"><label for="q9_1"><span class="sc-num">1</span><span class="sc-word">全く<br>思わ<br>ない</span></label></div>
+            <div class="sc-opt"><input type="radio" name="q9" value="2" id="q9_2"><label for="q9_2"><span class="sc-num">2</span></label></div>
+            <div class="sc-opt"><input type="radio" name="q9" value="3" id="q9_3"><label for="q9_3"><span class="sc-num">3</span></label></div>
+            <div class="sc-opt"><input type="radio" name="q9" value="4" id="q9_4"><label for="q9_4"><span class="sc-num">4</span></label></div>
+            <div class="sc-opt"><input type="radio" name="q9" value="5" id="q9_5"><label for="q9_5"><span class="sc-num">5</span><span class="sc-word">ぜひ<br>紹介<br>したい</span></label></div>
+          </div>
+          <div class="scale-axis"><span>← 紹介しない</span><span>紹介したい →</span></div>
+          <div class="err-msg">いずれかを選択してください</div>
+        </div>
+
+        <!-- Q10: 自由コメント -->
+        <div class="q" id="q10">
+          <div class="q-label">LPを改善するとしたら、どこを変えるべきだと思いますか？（任意）</div>
+          <textarea name="q10" placeholder="例：比較表の説明をもっと具体的にしてほしい、ターゲット層のイメージが湧きにくかった　など" rows="5"></textarea>
+        </div>
+
+        <!-- Q11: 良かった点 -->
+        <div class="q" id="q11">
+          <div class="q-label">特に良かった・印象に残った点があれば教えてください。（任意）</div>
+          <textarea name="q11" placeholder="例：キャッチコピーが刺さった、比較表がわかりやすかった　など" rows="4"></textarea>
+        </div>
+
+      </div><!-- /section 3 -->
+
+      <!-- ── 属性 ── -->
+      <div class="attr-box">
+        <div class="attr-label">回答者の属性（任意・統計分析のみに使用）</div>
+
+        <div class="q" id="q12" style="margin-bottom: 1.8rem;">
+          <div class="q-label" style="font-size:.82rem; font-weight:500; margin-bottom:.9rem;">現在のキャリア状況</div>
+          <div class="radio-list">
+            <div class="r-opt"><input type="radio" name="q12" value="積極転職中" id="q12a"><label for="q12a">転職を積極的に検討している</label></div>
+            <div class="r-opt"><input type="radio" name="q12" value="将来的に転職・独立" id="q12b"><label for="q12b">将来的に転職・独立を考えている</label></div>
+            <div class="r-opt"><input type="radio" name="q12" value="起業経験あり" id="q12c"><label for="q12c">過去に起業・独立経験がある</label></div>
+            <div class="r-opt"><input type="radio" name="q12" value="現状維持" id="q12d"><label for="q12d">特にキャリアチェンジは考えていない</label></div>
+          </div>
+        </div>
+
+        <div class="q" id="q13" style="margin-bottom: 0;">
+          <div class="q-label" style="font-size:.82rem; font-weight:500; margin-bottom:.9rem;">年齢層</div>
+          <div class="attr-grid">
+            <div class="r-opt"><input type="radio" name="q13" value="25歳未満" id="q13a"><label for="q13a">25歳未満</label></div>
+            <div class="r-opt"><input type="radio" name="q13" value="25〜29歳" id="q13b"><label for="q13b">25〜29歳</label></div>
+            <div class="r-opt"><input type="radio" name="q13" value="30〜34歳" id="q13c"><label for="q13c">30〜34歳</label></div>
+            <div class="r-opt"><input type="radio" name="q13" value="35〜39歳" id="q13d"><label for="q13d">35〜39歳</label></div>
+            <div class="r-opt"><input type="radio" name="q13" value="40歳以上" id="q13e"><label for="q13e">40歳以上</label></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="submit-row">
+        <button type="submit" class="btn-submit" id="btn-submit">回答を送信する</button>
+        <div class="submit-note">
+          回答はHTTPS通信で送信されます。<br>
+          氏名・メールアドレスは収集していません。
+        </div>
+      </div>
+
+    </form>
+  </div><!-- /form-area -->
+
+  <!-- ── Already answered ── -->
+  <div class="end-screen" id="already-done">
+    <div class="end-icon">
+      <svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 1 0 0 20A10 10 0 0 0 12 2zm0 18a8 8 0 1 1 0-16 8 8 0 0 1 0 16zm-1-5h2v2h-2zm0-8h2v6h-2z"/></svg>
+    </div>
+    <h2>すでに回答済みです</h2>
+    <p>このアンケートへのご回答はすでに受け付けています。<br>貴重なお時間をいただき、ありがとうございました。</p>
+  </div>
+
+  <!-- ── Success ── -->
+  <div class="end-screen" id="success">
+    <div class="end-icon">
+      <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+    </div>
+    <h2>回答を受け付けました。<br>ありがとうございます。</h2>
+    <p>いただいたご意見は、採用ページの改善に大切に活用いたします。<br>お忙しい中ご協力いただき、誠にありがとうございました。</p>
+  </div>
+
+</main>
+
+<script>
+/* ========= CONFIG =========
+   GASをデプロイ後、WebアプリのURLに差し替えてください
+   ========================= */
+const GAS_URL = 'https://script.google.com/macros/s/AKfycbzH6drYaGUfWb0J4xmpUh9xvCawdXXkuivHjkz6thQEKVEZcx9PcWVugwR1q3JWglAJ/exec';
+
+const DONE_KEY = 'smasta_lp_survey_v1';
+const REQUIRED = ['q1','q3','q4','q5','q7','q9'];
+const CHECKBOX_REQ = ['q2','q5'];
+
+// ── 初期化 ──────────────────────────────────────────────
+window.addEventListener('DOMContentLoaded', () => {
+  if (localStorage.getItem(DONE_KEY)) {
+    showEnd('already-done'); return;
+  }
+  setupProgress();
+  setupConditional();
+  document.getElementById('survey').addEventListener('submit', onSubmit);
+});
+
+// ── プログレスバー ────────────────────────────────────────
+function setupProgress() {
+  const allReq = ['q1','q2','q3','q4','q5','q7','q9'];
+  const form = document.getElementById('survey');
+  form.addEventListener('change', () => {
+    let done = 0;
+    allReq.forEach(name => {
+      if (CHECKBOX_REQ.includes(name)) {
+        if (form.querySelector(`[name="${name}"]:checked`)) done++;
+      } else {
+        if (form.querySelector(`[name="${name}"]:checked`)) done++;
+      }
+    });
+    const pct = Math.min(Math.round(done / allReq.length * 100), 96);
+    document.getElementById('progress-fill').style.width = pct + '%';
+  });
+}
+
+// ── 条件分岐：Q7が1〜2のときQ8を表示 ─────────────────────
+function setupConditional() {
+  document.querySelectorAll('[name="q7"]').forEach(el => {
+    el.addEventListener('change', () => {
+      const v = parseInt(el.value);
+      document.getElementById('q8').style.display = (v <= 2) ? 'block' : 'none';
+    });
+  });
+}
+
+// ── バリデーション ────────────────────────────────────────
+function validate() {
+  let ok = true, first = null;
+
+  // ラジオ必須
+  ['q1','q3','q4','q7','q9'].forEach(name => {
+    const container = document.getElementById(name);
+    const checked = document.querySelector(`[name="${name}"]:checked`);
+    if (!checked) {
+      container.classList.add('has-error'); ok = false;
+      if (!first) first = container;
+    } else {
+      container.classList.remove('has-error');
+    }
+  });
+
+  // チェックボックス必須
+  ['q2','q5'].forEach(name => {
+    const container = document.getElementById(name);
+    const checked = document.querySelector(`[name="${name}"]:checked`);
+    if (!checked) {
+      container.classList.add('has-error'); ok = false;
+      if (!first) first = container;
+    } else {
+      container.classList.remove('has-error');
+    }
+  });
+
+  if (first) first.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  return ok;
+}
+
+// ── データ収集 ────────────────────────────────────────────
+function collect() {
+  const f = document.getElementById('survey');
+  return {
+    timestamp:          new Date().toISOString(),
+    q1_first_impression:  radio('q1'),
+    q2_impression_words:  checkboxes('q2'),
+    q3_concept_resonance: radio('q3'),
+    q4_comparison_clarity:radio('q4'),
+    q5_resonated_points:  checkboxes('q5'),
+    q6_concerns:          checkboxes('q6'),
+    q7_action_intent:     radio('q7'),
+    q8_no_reason:         radio('q8'),
+    q9_referral_intent:   radio('q9'),
+    q10_improvement:      f.querySelector('[name="q10"]').value.trim(),
+    q11_good_points:      f.querySelector('[name="q11"]').value.trim(),
+    q12_career_status:    radio('q12'),
+    q13_age_bracket:      radio('q13'),
+    ua: navigator.userAgent.substring(0, 120),
+  };
+}
+
+function radio(name) {
+  const el = document.querySelector(`[name="${name}"]:checked`);
+  return el ? el.value : '';
+}
+function checkboxes(name) {
+  return Array.from(document.querySelectorAll(`[name="${name}"]:checked`))
+    .map(e => e.value).join('、');
+}
+
+// ── 送信 ──────────────────────────────────────────────────
+async function onSubmit(e) {
+  e.preventDefault();
+  if (!validate()) return;
+
+  const overlay = document.getElementById('overlay');
+  const btn = document.getElementById('btn-submit');
+  overlay.classList.add('on');
+  btn.disabled = true;
+
+  try {
+    await fetch(GAS_URL, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(collect()),
+    });
+
+    localStorage.setItem(DONE_KEY, '1');
+    document.getElementById('progress-fill').style.width = '100%';
+
+    setTimeout(() => {
+      overlay.classList.remove('on');
+      showEnd('success');
+    }, 700);
+
+  } catch (err) {
+    overlay.classList.remove('on');
+    btn.disabled = false;
+    alert('送信に失敗しました。ネットワークを確認して再度お試しください。\n\n' + err.message);
+  }
+}
+
+// ── 完了画面に切り替え ────────────────────────────────────
+function showEnd(id) {
+  document.getElementById('form-area').style.display = 'none';
+  const el = document.getElementById(id);
+  el.style.display = 'block';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+</script>
+</body>
+</html>
